@@ -12,7 +12,7 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>admin-server</name>
+  <name>demo-admin-server</name>
   <description>Demo project for Spring Boot</description>
 
   <properties>
@@ -40,7 +40,7 @@
   </dependencies>
 
   <build>
-    <finalName>admin-server</finalName>
+    <finalName>demo-admin-server</finalName>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>

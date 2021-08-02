@@ -17,8 +17,8 @@
   </properties>
 
   <modules>
-    <module>admin-client</module>
-    <module>admin-server</module>
+    <module>demo-admin-client</module>
+    <module>demo-admin-server</module>
   </modules>
 
   <dependencyManagement>
@@ -29,6 +29,12 @@
         <version>${spring-boot-admin.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.20</version>
+        <scope>compile</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
