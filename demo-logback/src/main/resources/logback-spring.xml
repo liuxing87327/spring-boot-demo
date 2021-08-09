@@ -4,6 +4,7 @@
             value="${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} %file:%line: %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
   <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
+  <!--以下为全局默认配置-->
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <level>INFO</level>
@@ -72,13 +73,7 @@
     </encoder>
   </appender>
 
-  <root level="info">
-    <appender-ref ref="CONSOLE"/>
-    <appender-ref ref="FILE_INFO"/>
-    <appender-ref ref="FILE_ERROR"/>
-  </root>
-
-  <!--自定义输出配置-->
+  <!--以下为自定义输出配置-->
   <appender name="FILE_INFO_CUSTOM" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <!--如果只是想要 Info 级别的日志，只是过滤 info 还是会输出 Error 日志，因为 Error 的级别高， 所以我们使用下面的策略，可以避免输出 Error 的日志-->
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -113,10 +108,41 @@
     </encoder>
   </appender>
 
+  <appender name="FILE_ERROR_CUSTOM" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--如果只是想要 Error 级别的日志，那么需要过滤一下，默认是 info 级别的，ThresholdFilter-->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>Error</level>
+    </filter>
+    <!--日志名称，如果没有File 属性，那么只会使用FileNamePattern的文件路径规则如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天的日志改名为今天的日期。即，<File> 的日志都是当天的。-->
+    <!--<File>logs/error.demo-logback.log</File>-->
+    <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
+      <FileNamePattern>logs/custom/demo-logback/error.created_on_%d{yyyy-MM-dd}.part_%i.log</FileNamePattern>
+      <!--只保留最近90天的日志-->
+      <maxHistory>90</maxHistory>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- maxFileSize:这是活动文件的大小，默认值是10MB,本篇设置为1KB，只是为了演示 -->
+        <maxFileSize>2MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder>
+      <pattern>${FILE_ERROR_PATTERN}</pattern>
+      <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+    </encoder>
+  </appender>
+
   <!--使用自定义输出目录-->
   <!--需要在使用时特殊声明：private static final Logger customLogOut = LoggerFactory.getLogger("customLogOut");-->
   <logger name="customLogOut" additivity="false">
     <appender-ref ref="FILE_INFO_CUSTOM"/>
+    <appender-ref ref="FILE_ERROR_CUSTOM"/>
   </logger>
+
+  <root level="info">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE_INFO"/>
+    <appender-ref ref="FILE_ERROR"/>
+  </root>
 
 </configuration>

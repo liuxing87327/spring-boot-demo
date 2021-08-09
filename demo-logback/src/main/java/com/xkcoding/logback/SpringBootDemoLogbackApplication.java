@@ -38,5 +38,6 @@ public class SpringBootDemoLogbackApplication {
 
         log.info("日志输出到文件: {}", "默认全局");
         customLogOut.info("日志输出到文件: {}", "自定义路径");
+        customLogOut.error("日志输出到文件: {}", "自定义路径");
     }
 }
